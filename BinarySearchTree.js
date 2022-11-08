@@ -109,27 +109,96 @@ function createTree(array) {
         },
         levelOrder(func) {
 
+            let queue = [this.root];
+            let result = [];
+            let node = null;
+
+            while (queue.length > 0) {
+                node = queue.shift();
+                if (node.left) queue.push(node.left);
+                if (node.right) queue.push(node.right);
+                result.push(node.value);
+            }
+
+            return func ? result.map(func) : result;
         },
         inorder(func) {
 
+            function inorderRecursive(node) {
+                if (node === null) return;
+
+                inorderRecursive(node.left, result);
+                result.push(node.value);
+                inorderRecursive(node.right, result);
+            }
+
+            let result = [];
+            
+            inorderRecursive(this.root);
+
+            return func ? result.map(func) : result;
         },
         preorder(func) {
 
+            function preorder(node) {
+                if (node === null) return;
+
+                result.push(node.value);
+                preorder(node.left, result);
+                preorder(node.right, result);
+            }
+
+            let result = [];
+            
+            preorder(this.root);
+
+            return func ? result.map(func) : result;
         },
         postorder(func) {
 
+            function postorder(node) {
+                if (node === null) return;
+
+                postorder(node.left, result);
+                postorder(node.right, result);
+                result.push(node.value);
+            }
+
+            let result = [];
+            
+            postorder(this.root);
+
+            return func ? result.map(func) : result;
         },
         height(node) {
-
+            
+            if (node === null) return -1;
+            
+            return Math.max(this.height(node.left), this.height(node.right)) + 1;
         },
         depth(node) {
+            if (this.root === null) return "This node is not in the tree!";
 
+            let head = this.root;
+            let depth = 0;
+
+            while (head !== null) {
+                if (node.value === head.value) {
+                    return depth;
+                }
+                if (node.value < head.value) head = head.left;
+                else head = head.right;
+                depth += 1;
+            }
+
+            return "This node is not in the tree!";
         },
         isBalanced() {
-
+            return this.height(this.root.left) === this.height(this.root.right);
         },
         rebalance() {
-
+            let sortedArray = this.inorder();
+            this.root = this.buildTree(sortedArray, 0, sortedArray.length - 1);
         },
     }
 }
@@ -150,10 +219,20 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 }
 
 tree.insert(createNode(43));
-// prettyPrint(tree.root);
+
+prettyPrint(tree.root);
 
 // console.log(tree.delete(createNode(56)));
-// prettyPrint(tree.root);
 
 // console.log(tree.find(createNode(324)));
 // console.log(tree.find(createNode(56)));
+
+console.log(tree.postorder());
+
+console.log(tree.height(tree.root));
+
+console.log(tree.isBalanced());
+
+console.log(tree.rebalance());
+
+prettyPrint(tree.root);
