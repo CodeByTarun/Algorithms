@@ -1,52 +1,102 @@
-function createNode(value, leftNode, rightNode) {
+function createNode(value, left, right) {
     return {
-        value: value,
-        leftNode: leftNode,
-        rightNode: rightNode,
+        value: value ?? null,
+        left: left ?? null,
+        right: right ?? null,
     }
 }
 
 function createTree(array) {
 
-    let _root = this.buildTree(array);
+    let set = new Set(array);
+    let sortedArray = [...set].sort((a, b) => a - b);
+
+    let _root = _buildTree(sortedArray, 0, sortedArray.length - 1);
+
+    function _buildTree(sortedArray, L, R) {
+        
+        if (L > R) return null;
+        
+        let mid = Math.floor((L + R) / 2);
+        
+        return createNode(sortedArray[mid], _buildTree(sortedArray, L, mid - 1), _buildTree(sortedArray, mid + 1, R));
+    }
 
     return {
-        root: this.root,
-        buildTree: (array) => {
+        root: _root,
+        buildTree: _buildTree,
+        insert(node) {
+            if (this.root === null) {
+                this.root = node;
+            }
+
+            let head = this.root;
+
+            while(true) {
+                if (node.value < head.value) {
+                    if (head.left === null) {
+                        head.left = node;
+                        break;
+                    }
+                    head = head.left;
+                } else {
+                    if (head.right === null) {
+                        head.right = node;
+                        break;
+                    }
+                    head = head.right;
+                }
+            }
+        },
+        delete(node) {
+            // parent and one child behave the same
+            // two children means that you have to replace the minimum value on the right side to get this done
 
         },
-        insert: (node) => {
+        find(node) {
+            
+        },
+        levelOrder(func) {
 
         },
-        delete: (node) => {
+        inorder(func) {
 
         },
-        find: (node) => {
+        preorder(func) {
 
         },
-        levelOrder: (func) => {
+        postorder(func) {
 
         },
-        inorder: (func) => {
+        height(node) {
 
         },
-        preorder: (func) => {
+        depth(node) {
 
         },
-        postorder: (func) => {
+        isBalanced() {
 
         },
-        height: (node) => {
-
-        },
-        depth: (node) => {
-
-        },
-        isBalanced: () => {
-
-        },
-        rebalance: () => {
+        rebalance() {
 
         },
     }
 }
+
+
+
+let tree = createTree([1,3,56,2,4,8,99,23,543,32,1,32]);
+
+
+const prettyPrint = (node, prefix = '', isLeft = true) => {
+    if (node.right !== null) {
+      prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+    }
+    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.value}`);
+    if (node.left !== null) {
+      prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+    }
+}
+
+tree.insert(createNode(43));
+prettyPrint(tree.root);
