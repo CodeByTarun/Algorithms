@@ -93,7 +93,19 @@ function createTree(array) {
 
         },
         find(node) {
-            
+            if (this.root === null) return "This node is not in the tree!";
+
+            let head = this.root;
+
+            while (head !== null) {
+                if (node.value === head.value) {
+                    return head;
+                }
+                if (node.value < head.value) head = head.left;
+                else head = head.right;
+            }
+
+            return "This node is not in the tree!";
         },
         levelOrder(func) {
 
@@ -138,7 +150,10 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 }
 
 tree.insert(createNode(43));
-prettyPrint(tree.root);
+// prettyPrint(tree.root);
 
-console.log(tree.delete(createNode(56)))
-prettyPrint(tree.root);
+// console.log(tree.delete(createNode(56)));
+// prettyPrint(tree.root);
+
+// console.log(tree.find(createNode(324)));
+// console.log(tree.find(createNode(56)));
