@@ -51,6 +51,45 @@ function createTree(array) {
         delete(node) {
             // parent and one child behave the same
             // two children means that you have to replace the minimum value on the right side to get this done
+            if (this.root === null) return "This node is not in the tree!";
+
+            let head = this.root;
+            let parent = null;
+            let side = 'right';
+            
+            while(head !== null) {
+                if (head.value === node.value) {
+                    if (head.left && head.right) {
+
+                        let minNode = head.right;
+                        while(minNode.left !== null) {
+                            minNode = minNode.left;
+                        }
+
+                        this.delete(minNode);
+                        minNode.left = head.left;
+                        minNode.right = head.right;
+                        if (parent === null) this.root = minNode;
+                        else parent[side] = minNode;
+                        break;
+
+                    } else {
+                        if (parent === null) this.root = head.left ? head.left : head.right ? head.right : null;
+                        parent[side] = head.left ? head.left : head.right ? head.right : null;
+                        break;
+                    }
+                } else {
+                    parent = head;
+                    if (node.value < head.value) {
+                        head = head.left;
+                        side = 'left';
+                    } else {
+                        head = head.right;
+                        side = 'right';
+                    }
+                }
+            }
+            return "This node is not in the tree!";
 
         },
         find(node) {
@@ -99,4 +138,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 }
 
 tree.insert(createNode(43));
+prettyPrint(tree.root);
+
+console.log(tree.delete(createNode(56)))
 prettyPrint(tree.root);
